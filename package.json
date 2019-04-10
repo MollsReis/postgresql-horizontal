@@ -5,9 +5,10 @@
   "author": "Robert Scott Reis <reis.robert.s@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "express": "^4.16.4",
     "pg": "^7.9.0"
   },
   "scripts": {
-    "test": "node ./src/index.js"
+    "server": "node ./src/index.js"
   }
 }

@@ -13,45 +13,57 @@ services:
     image: 'node:10.12'
     depends_on:
       - deps
+    environment:
+      POSTGRES_USER: &user user
+      POSTGRES_PASSWORD: &pass pass
+      POSTGRES_DB: &dbname
+    ports:
+      - 5555:5555
     restart: 'always'
     volumes:
       - 'node_modules:/app/node_modules:delegated'
       - './src:/app/src:cached'
       - './package.json:/app/package.json:cached'
     working_dir: '/app'
+    command: 'yarn run server'
 
   db_primary: &db
-    image: 'mdillon/postgis:11'
+    image: 'postgres:11'
     depends_on:
       - db_part1
       - db_part2
       - db_part3
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: pass
+      POSTGRES_USER: *user
+      POSTGRES_PASSWORD: *pass
+      POSTGRES_DB: *dbname
     ports:
       - 5432
     restart: 'always'
     volumes:
       - 'db_primary:/var/lib/postgresql/data:delegated'
+      - './db/db_primary.sql:/docker-entrypoint-initdb.d/setup.sql:cached'
 
   db_part1:
     <<: *db
     depends_on: []
     volumes:
       - 'db_part1:/var/lib/postgresql/data:delegated'
+      - './db/db_part1.sql:/docker-entrypoint-initdb.d/setup.sql:cached'
 
   db_part2:
     <<: *db
     depends_on: []
     volumes:
       - 'db_part2:/var/lib/postgresql/data:delegated'
+      - './db/db_part2.sql:/docker-entrypoint-initdb.d/setup.sql:cached'
 
   db_part3:
     <<: *db
     depends_on: []
     volumes:
       - 'db_part3:/var/lib/postgresql/data:delegated'
+      - './db/db_part3.sql:/docker-entrypoint-initdb.d/setup.sql :cached'
 
 volumes:
   db_primary:

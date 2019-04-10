@@ -1,0 +1,10 @@
+{
+  "name": "postgresql-horizontal",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Robert Scott Reis <reis.robert.s@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "pg": "^7.9.0"
+  }
+}

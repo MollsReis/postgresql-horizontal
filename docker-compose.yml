@@ -1,0 +1,57 @@
+version: '3.3'
+services:
+  deps:
+    image: 'node:10.12'
+    volumes:
+      - './package.json:/package.json:cached'
+      - './yarn.lock:/yarn.lock:cached'
+      - 'node_modules:/node_modules:delegated'
+    working_dir: '/'
+    command: 'yarn install'
+
+  server:
+    image: 'node:10.12'
+    depends_on:
+      - deps
+    restart: 'always'
+    volumes:
+      - 'node_modules:/app/node_modules:delegated'
+      - './src:/app/src:cached'
+    working_dir: '/app'
+
+  db_primary: &db
+    image: 'mdillon/postgis:11'
+    depends_on:
+      - db_part1
+      - db_part2
+      - db_part3
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    ports:
+      - 5432
+    restart: 'always'
+    volumes:
+      - 'db_primary:/var/lib/postgresql/data:delegated'
+
+  db_part1:
+    <<: *db
+    volumes:
+      - 'db_part1:/var/lib/postgresql/data:delegated'
+
+  db_part2:
+    <<: *db
+    volumes:
+      - 'db_part2:/var/lib/postgresql/data:delegated'
+
+  db_part3:
+    <<: *db
+    volumes:
+      - 'db_part3:/var/lib/postgresql/data:delegated'
+
+volumes:
+  db_primary:
+  db_part1:
+  db_part2:
+  db_part3:
+  node_modules:

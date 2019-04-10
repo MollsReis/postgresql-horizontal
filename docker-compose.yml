@@ -17,6 +17,7 @@ services:
     volumes:
       - 'node_modules:/app/node_modules:delegated'
       - './src:/app/src:cached'
+      - './package.json:/app/package.json:cached'
     working_dir: '/app'
 
   db_primary: &db
@@ -36,16 +37,19 @@ services:
 
   db_part1:
     <<: *db
+    depends_on: []
     volumes:
       - 'db_part1:/var/lib/postgresql/data:delegated'
 
   db_part2:
     <<: *db
+    depends_on: []
     volumes:
       - 'db_part2:/var/lib/postgresql/data:delegated'
 
   db_part3:
     <<: *db
+    depends_on: []
     volumes:
       - 'db_part3:/var/lib/postgresql/data:delegated'
 

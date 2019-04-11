@@ -13,10 +13,11 @@ services:
     image: 'node:10.12'
     depends_on:
       - deps
+      - db_primary
     environment:
       POSTGRES_USER: &user user
       POSTGRES_PASSWORD: &pass pass
-      POSTGRES_DB: &dbname
+      POSTGRES_DB: &dbname scaling
     ports:
       - 5555:5555
     restart: 'always'
@@ -32,7 +33,6 @@ services:
     depends_on:
       - db_part1
       - db_part2
-      - db_part3
     environment:
       POSTGRES_USER: *user
       POSTGRES_PASSWORD: *pass
@@ -57,13 +57,6 @@ services:
     volumes:
       - 'db_part2:/var/lib/postgresql/data:delegated'
       - './db/db_part2.sql:/docker-entrypoint-initdb.d/setup.sql:cached'
-
-  db_part3:
-    <<: *db
-    depends_on: []
-    volumes:
-      - 'db_part3:/var/lib/postgresql/data:delegated'
-      - './db/db_part3.sql:/docker-entrypoint-initdb.d/setup.sql :cached'
 
 volumes:
   db_primary:

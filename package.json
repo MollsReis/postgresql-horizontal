@@ -7,11 +7,12 @@
   "dependencies": {
     "express": "^4.16.4",
     "faker": "^4.1.0",
-    "lodash": "^4.17.11",
+    "highland": "^2.13.4",
     "moment": "^2.24.0",
+    "nodemon": "^1.18.11",
     "pg": "^7.9.0"
   },
   "scripts": {
-    "server": "node ./src/index.js"
+    "server": "nodemon src/index.js --watch ./src"
   }
 }

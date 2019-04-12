@@ -1,5 +1,4 @@
 const { Pool } = require('pg');
-const { chunk } = require('lodash');
 
 const CONFIG = {
   host: 'db_primary',
@@ -36,31 +35,27 @@ function connFactory (pool) {
     },
 
     // bulk insert values (array of objects) into given table
-    bulkInsert: async (table, values, chunkSize = 500) => {
+    bulkInsert: async (table, values) => {
       // bail if we have nothing to insert
       if (values.length === 0) {
         return null;
       }
 
-      // TODO ensure all objects have the same keys
       const cols = Object.keys(values[0]);
 
-      // batch inserts
-      for (const valuesChunk of chunk(values, chunkSize)) {
-        let params = [];
-        const qs = valuesChunk.map((row, idx) => {
-          params = params.concat(cols.map(k => row[k]));
-          return `(${cols.map((v, jdx) => `$${idx * cols.length + jdx + 1}`).
+      let params = [];
+      const qs = values.map((row, idx) => {
+        params = params.concat(cols.map(k => row[k]));
+        return `(${cols.map((v, jdx) => `$${idx * cols.length + jdx + 1}`).
           join(', ')})`
-        });
+      });
 
-        const sql = `
-          INSERT INTO ${table}
-          (${cols.join(', ')})
-          VALUES ${qs.join(', ')}`;
+      const sql = `
+        INSERT INTO ${table}
+        (${cols.join(', ')})
+        VALUES ${qs.join(', ')}`;
 
-        await conn.execute(sql, params);
-      }
+      return conn.execute(sql, params);
     }
   };
   return conn;

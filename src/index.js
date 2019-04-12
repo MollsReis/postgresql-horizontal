@@ -1,8 +1,6 @@
 const express = require('express');
 const Results = require('./results');
 
-// TODO use nodemon to keep the process running
-
 const app = express();
 app.disable('x-powered-by');
 

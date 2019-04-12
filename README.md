@@ -23,5 +23,5 @@ $ curl http://localhost:5555/populate
 
 5. Browse the DB via:
 ```
-$ docker-compose exec db_primary -U user -d scaling
+$ docker-compose exec db_primary psql -U user -d scaling
 ```

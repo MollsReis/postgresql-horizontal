@@ -1,4 +1,5 @@
 const { Pool } = require('pg');
+const { chunk } = require('lodash');
 
 const CONFIG = {
   host: 'db_primary',
@@ -56,7 +57,7 @@ function connFactory (pool) {
         const sql = `
           INSERT INTO ${table}
           (${cols.join(', ')})
-          VALUES (${qs.join(', ')})`;
+          VALUES ${qs.join(', ')}`;
 
         await conn.execute(sql, params);
       }
